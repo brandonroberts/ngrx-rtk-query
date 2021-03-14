@@ -8,6 +8,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { setupListeners } from '@rtk-incubator/rtk-query';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
+import { reducers } from './store';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,7 @@ import { environment } from '../environments/environment';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    StoreModule.forRoot({}, {}),
+    StoreModule.forRoot(reducers),
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production })
   ],
@@ -25,6 +26,6 @@ import { environment } from '../environments/environment';
 })
 export class AppModule {
   constructor(store: Store) {
-    setupListeners(store.dispatch);
+    setupListeners(store.dispatch.bind(store));
   }
 }

@@ -11,6 +11,5 @@ export const pokemonApi = createApi({
   }),
 });
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-export const { useGetPokemonByNameQuery } = pokemonApi;
+export const pokemonThunkActionCreator = (name: string) => pokemonApi.endpoints.getPokemonByName.initiate(name);
+export const selectPokemon = (name: string) => pokemonApi.endpoints.getPokemonByName.select(name);
