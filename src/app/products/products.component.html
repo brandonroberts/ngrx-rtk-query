@@ -1,5 +1,7 @@
 <h2>Products</h2>
 
+<app-product-form (submitted)="onProductAdded($event)"></app-product-form>
+
 <div *ngFor="let product of products$ | async">
 
   <h3>

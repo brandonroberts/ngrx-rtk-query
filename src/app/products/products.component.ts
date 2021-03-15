@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { loadProducts, selectAllProducts } from '../services/products';
+import * as uuid from 'uuid';
+
+import { Product } from '../models/product';
+import { addProduct, loadProducts, selectAllProducts } from '../services/products';
 import { ThunkService } from '../services/thunk.service';
 
 @Component({
@@ -17,4 +20,7 @@ export class ProductsComponent implements OnInit {
     this.dispatcher.dispatch(loadProducts());
   }
 
+  onProductAdded(product: Product) {
+    this.dispatcher.dispatch(addProduct({id: uuid.v4(), ...product}));
+  }
 }

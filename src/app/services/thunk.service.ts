@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { ThunkAction } from '@reduxjs/toolkit';
+import { MiddlewareAPI, ThunkAction } from '@reduxjs/toolkit';
 import { take } from 'rxjs/operators';
 
 @Injectable({
@@ -9,21 +9,32 @@ import { take } from 'rxjs/operators';
 export class ThunkService {
   constructor(private store: Store) {}
 
+  getState() {
+    let state: object;
+
+    this.store.pipe(take(1)).subscribe((res) => {
+      state = res;
+    });
+
+    return state;
+  }
+
   dispatch(thunkAction: ThunkAction<any, any, any, any>) {
-    const getState = () => {
-      let state: object;
+    thunkAction(this.runThunk.bind(this), this.getState.bind(this), undefined);
+  }
 
-      this.store.pipe(take(1)).subscribe((res) => {
-        state = res;
-      });
-      return state;
-    };
-
-    thunkAction(
-      (thunk: ThunkAction<any, any, any, any>) =>
-        thunk(this.store.dispatch.bind(this.store), getState, undefined),
-      getState,
+  runThunk(thunk: ThunkAction<any, any, any, any>) {
+    thunk(
+      this.store.dispatch.bind(this.store),
+      this.getState.bind(this),
       undefined
     );
+  }
+
+  middlewareApi(): MiddlewareAPI {
+    return {
+      dispatch: this.runThunk.bind(this),
+      getState: this.getState.bind(this),
+    };
   }
 }
