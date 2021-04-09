@@ -20,7 +20,12 @@ export class ThunkService {
   }
 
   dispatch(thunkAction: ThunkAction<any, any, any, any>) {
-    thunkAction(this.runThunk.bind(this), this.getState.bind(this), undefined);
+    thunkAction(
+      (thunk: ThunkAction<any, any, any, any>) =>
+        thunk(this.store.dispatch.bind(this.store), this.getState.bind(this), undefined),
+      this.getState.bind(this),
+      undefined
+    );
   }
 
   runThunk(thunk: ThunkAction<any, any, any, any>) {
