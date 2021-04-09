@@ -5,8 +5,6 @@ import { createApi, fetchBaseQuery } from '@rtk-incubator/rtk-query';
 import { Product } from '../models/product';
 import { ThunkService } from './thunk.service';
 
-export const PRODUCTS_FEATURE_CONFIG_TOKEN = new InjectionToken<StoreConfig<any>>('Feature Config');
-
 // Define a service using a base URL and expected endpoints
 export const productsApi = createApi({
   reducerPath: 'products',
@@ -28,10 +26,7 @@ export const productsApi = createApi({
   }),
 });
 
-export const productsSlice = {
-  name: productsApi.reducerPath,
-  reducer: productsApi.reducer
-};
+export const PRODUCTS_FEATURE_CONFIG_TOKEN = new InjectionToken<StoreConfig<any>>('Products Feature Config');
 
 /**
  * Middleware/Meta-reducer factory
@@ -54,6 +49,19 @@ export function getProductsFeatureConfig(thunkService: ThunkService): StoreConfi
   return { 
     metaReducers: [productsMiddleware(thunkService)]
   };
+}
+
+/**
+ * Provider function for feature config
+ */
+export function provideProductsFeatureConfig() {
+  return [
+    {
+      provide: PRODUCTS_FEATURE_CONFIG_TOKEN,
+      deps: [ThunkService],
+      useFactory: getProductsFeatureConfig,
+    }
+  ];
 }
 
 /**
