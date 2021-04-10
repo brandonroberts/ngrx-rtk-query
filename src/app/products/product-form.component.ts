@@ -25,9 +25,9 @@ import { FormControl, FormGroup } from '@angular/forms';
 })
 export class ProductFormComponent implements OnInit {
   productForm = new FormGroup({
-    name: new FormControl('Big'),
-    description: new FormControl('Phone'),
-    price: new FormControl(5)
+    name: new FormControl(''),
+    description: new FormControl(''),
+    price: new FormControl(500)
   });
 
   @Output() submitted = new EventEmitter();
