@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { SubscriptionLike } from 'rxjs';
 import * as uuid from 'uuid';
 
 import { Product } from '../models/product';
@@ -11,16 +12,23 @@ import { ThunkService } from '../services/thunk.service';
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css']
 })
-export class ProductsComponent implements OnInit {
+export class ProductsComponent implements OnInit, OnDestroy {
   products$ = this.store.select(selectAllProducts);
+  loadSub$: SubscriptionLike;
+  addSub$: SubscriptionLike;
 
   constructor(private store: Store, private dispatcher: ThunkService) { }
 
   ngOnInit(): void {
-    this.dispatcher.dispatch(loadProducts());
+    this.loadSub$ = this.dispatcher.dispatch(loadProducts());
   }
 
   onProductAdded(product: Product) {
-    this.dispatcher.dispatch(addProduct({id: uuid.v4(), ...product}));
+    this.addSub$ = this.dispatcher.dispatch(addProduct({id: uuid.v4(), ...product}));
+  }
+
+  ngOnDestroy() {
+    this.loadSub$.unsubscribe();
+    this.addSub$.unsubscribe();
   }
 }

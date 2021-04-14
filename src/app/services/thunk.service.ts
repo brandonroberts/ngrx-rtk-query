@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { MiddlewareAPI, ThunkAction } from '@reduxjs/toolkit';
+import { SubscriptionLike } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 @Injectable({
@@ -19,8 +20,8 @@ export class ThunkService {
     return state;
   }
 
-  dispatch(thunkAction: ThunkAction<any, any, any, any>) {
-    thunkAction(
+  dispatch(thunkAction: ThunkAction<any, any, any, any>): SubscriptionLike {
+    return thunkAction(
       (thunk: ThunkAction<any, any, any, any>) =>
         thunk(this.store.dispatch.bind(this.store), this.getState.bind(this), undefined),
       this.getState.bind(this),
@@ -29,7 +30,7 @@ export class ThunkService {
   }
 
   runThunk(thunk: ThunkAction<any, any, any, any>) {
-    thunk(
+    return thunk(
       this.store.dispatch.bind(this.store),
       this.getState.bind(this),
       undefined
